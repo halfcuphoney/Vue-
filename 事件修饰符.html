@@ -1,0 +1,76 @@
+<HTML>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+        <title>事件修饰符</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script><!--引入链接-->
+        <style>
+            .inner{
+                height: 150px;
+                width: 150px;
+                background-color: aqua;
+            }
+            .outer{
+                padding: 40px 50px 60px 70px;
+                background-color: blue;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- <div id="app" class="inner" v-on:click.capture="divHandler">
+            <input type="button" value="click here" v-on:click="btnHandler">
+        </div> -->
+
+        <!-- 使用.self使div元素自己被点击时才应用函数 ，点击按钮时不应用函数-->
+        <!-- <div id="app" class="inner" v-on:click.self="divHandler">
+            <input type="button" value="click here" v-on:click="btnHandler">
+        </div> -->
+
+        <!-- 使用once修饰符使得prevent只能在第一次点击时组织跳转，第二次就不能阻止了 -->
+        <!-- <div id="app" class="inner" v-on:click="divHandler">
+            <a href="http://www.baidu.com" v-on:click.prevent.once="linkclick">baidu is here</a>
+        </div> -->
+
+        <div id="app" class="outer" v-on:click="div2handler">
+            <div class="inner" v-on:click.self="divHandler">
+                <input type="button" value="click here" v-on:click="btnHandler">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>name</th>
+                        <th>ctime</th>
+                        <th>opration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script>
+            var vm = new Vue({
+                el: '#app',
+                data:{},
+                methods:{
+                    linkclick(){
+                        console.log("you clicked baidu")
+                    },
+                    divHandler (){
+                        console.log("you clicked the div")
+                    },
+                    btnHandler (){
+                        console.log("you clicked the button")
+                    },
+                    div2handler () {
+                        console.log("the outer div is clicked")
+                    }
+                }
+            });
+        </script>
+
+
+    </body>
+</HTML>
