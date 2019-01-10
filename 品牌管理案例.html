@@ -1,0 +1,140 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+        <title>品牌管理案例</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script><!--引入链接-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/minty/bootstrap.min.css">
+        <style>
+            
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            
+            
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">添加品牌</h3>
+                </div>
+                <div class="panel-body form-inline">
+                    <label>
+                        id:
+                        <input type="text" class="form-control" v-model="id">
+                    </label>
+                    <label>
+                        name:
+                        <input type="text" class="form-control" v-model="name">
+                    </label>
+                    <!-- 在vue中，使用事件绑定机制，为元素指定处理函数的时候，加了小括号，就可以给函数传参了 -->
+                    <input type="button" value="添加" class="btn btn-primary" v-on:click="add()">
+
+                    <label>
+                        按名称关键字搜索
+                        <input type="text" class="form-control" v-model="keywords">
+                    </label>
+                </div>
+            </div>
+
+
+            <table  class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>name</th>
+                        <th>ctime</th>
+                        <th>opration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 为了显示搜索结果故现在在搜索函数中迭代 -->
+                    <!-- <tr v-for="item in list" :key="item.id"> -->
+                    <!-- 通过自定义search方法，将关键字用传参的形式传递到search中，
+                    在其内部执行for循环，搜索关键字的数据，保存到新数组中返回 -->
+                    <tr v-for="item in search(keywords)" :key="item.id">
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.ctime }}</td>
+                        <td>
+                            <!-- 此时要组织默认行为，防止点击后刷新页面 -->
+                            <a href="" @click.prevent="del(item.id)">删除</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+           
+        </div>
+        <script>
+            var vm=new Vue({
+                el: "#app",
+                data:{
+                    id:'',
+                    name:'',
+                    keywords:'',//搜索的关键字
+                    list:[
+                        { id:1, name:'奔驰', ctime:new Date() },
+                        { id:2, name:'宝马', ctime:new Date() },
+                    ]
+                },
+                methods:{
+                    add(){
+                        //获得数据，直接从data中获取
+                        //组织出一个对象
+                        //把这个对象添加到列表
+                        
+                        var car ={ id:this.id, name:this.name, ctime:new Date() }
+                        this.list.push(car)
+
+                        //添加之后还有清空输入框
+                        this.id=this.name=''
+                    },
+                    del(id){
+                        
+                        /*//分析：如何根据id找到删除这一项的索引
+                        //找到后，直接调用数组的splice方法
+                        //splice() 方法向/从数组中添加/删除项目，然后返回被删除的项目。
+                        //语法：arrayObject.splice(index,howmany,item1,.....,itemX)
+                        //随时都会终止，应该用some
+                        this.list.some((item,i) => {
+                            if(item.id=id){
+                                this.list.splice(i,1 )
+                                //上面中的参数是从索引为i的开始删除，删1个
+                                //在数组的some方法中，如果return true，就会终止这个数组的后续循环
+                            }
+                        })*/
+                        //除了用some还有下面这种方法,findIndex专门查找索引
+                        var index = this.list.findIndex(item =>{
+                            if(item.id=id) {
+                                return true;
+                            }
+                        })
+                        // console.log(index);
+                        this.list.splice(index,1 );
+                    },
+                    search(keywords){
+                        /*var newList = []
+                        this.list.forEach(item => {
+                            //使用indexof判断是否包含关键字
+                            //indexOf()的用法：stringobje.indexof（string）中字串string在父串中首次出现的位置，从0开始！没有返回-1
+                            if(item.name.indexOf(keywords) != -1) {
+                                newList.push(item);
+                            }
+                        })
+                        
+                        return newList*/
+                        //foreach、some、filter、findindex都是数组的新方法，
+                        //都会对数组每一项进行遍历，执行相关操作。
+                        this.list.filter(item => {
+                            //ES6中为字符串提供了新方法，叫做string.prototype.includes(string)
+                            //包含则返回true，否则返回false
+                            if(item.name.includes(keywords)){
+                                return item
+                            }
+                        })
+                    }
+
+                }
+            })
+        </script>
+    </body>
+</html>
